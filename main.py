@@ -93,6 +93,30 @@ def project_stop():
     g.db.commit()
     return redirect(url_for('project_detail', project_id=project_id))
 
+@app.route('/timekeeper/edit/<int:timekeeper_id>', methods=['GET', 'POST'])
+def edit_timekeeper(timekeeper_id):
+    if request.method == 'POST':
+        cur = g.db.execute('select project_id from timekeeper where (id)=(?)', [timekeeper_id])
+        project_id = cur.fetchall()[0][0]
+        g.db.execute('update timekeeper set start_date=(?), stop_date=(?) where (id)=(?)', [request.form['start_date'], request.form['stop_date'], timekeeper_id])
+        g.db.commit()
+        flash('Entry successfully modified.', 'success')
+        return redirect(url_for('project_detail', project_id=project_id))
+    else:
+        cur = g.db.execute('select id, start_date, stop_date from timekeeper where (id)=(?)', [timekeeper_id])
+        result = cur.fetchall()[0]
+        timekeeper = dict(id=result[0], start_date=result[1], stop_date=result[2])
+        return render_template('timekeeper_edit.html', timekeeper=timekeeper)
+
+@app.route('/timekeeper/delete/<int:timekeeper_id>', methods=['GET'])
+def delete_timekeeper(timekeeper_id):
+    cur = g.db.execute('select project_id from timekeeper where (id)=(?)', [timekeeper_id])
+    project_id = cur.fetchall()[0][0]
+    g.db.execute('delete from timekeeper where (id)=(?)', [timekeeper_id])
+    g.db.commit()
+    flash('Entry was deleted!', 'warning')
+    return redirect(url_for('project_detail', project_id=project_id))
+
 @app.template_filter('strftime')
 def _jinja2_filter_datetime(date, fmt=None):
     date = parser.parse(date)

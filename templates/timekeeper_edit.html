@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  <h2>Edit Entry</h2>
+{% endblock %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-sm-12">
+      <form action="{{ url_for('edit_timekeeper', timekeeper_id=timekeeper['id']) }}" method="POST" class="form-horizontal">
+        <div class="form-group">
+          <label for="start_date" class="control-label col-sm-2">Start Date:</label>
+          <div class="col-sm-4">
+            <input type="text" id="start_date" name="start_date" class="form-control" value="{{ timekeeper['start_date'] }}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="stop_date" class="control-label col-sm-2">Stop Date:</label>
+          <div class="col-sm-4">
+            <input type="text" id="stop_date" name="stop_date" class="form-control" value="{{ timekeeper['stop_date'] }}">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-4">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
