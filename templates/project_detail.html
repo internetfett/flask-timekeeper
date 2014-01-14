@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  <h2>{{ project['name'] }}</h2>
+{% endblock %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-sm-12">
+      {% if timekeeper %}
+        <table class="table">
+          <tr>
+            <th>Start</th>
+            <th>Stop</th>
+            <th>Duration</th>
+          </tr>
+          {% for time in timekeeper %}
+            <tr>
+              <td>{{ time['start_date']|strftime }}</td>
+              <td>
+                {% if time['stop_date'] %}
+                  {{ time['stop_date']|strftime }}
+                {% endif %}
+              </td>
+              <td>
+                {% if time['duration'] %}
+                  {{ time['duration']|deltaformat }}
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          {% if total %}
+            <tr>
+              <td><strong>Total:</strong></td>
+              <td>&nbsp;</td>
+              <td>{{ total|deltaformat }}</td>
+            </tr>
+          {% endif %}
+        </table>
+      {% endif %}
+      <div id="timer"></div>
+      {% if timekeeper[-1:][0] and not timekeeper[-1:][0]['stop_date'] %}
+        <form action="{{ url_for('project_stop') }}" method="POST" class="form-inline">
+          <input type="hidden" name="project_id" value="{{ project['id'] }}">
+          <input type="hidden" name="timekeeper_id" value="{{ timekeeper[-1:][0]['id'] }}">
+          <button type="submit" class="btn btn-danger" name="stop">Stop</button>
+        </form>
+      {% else %}
+        <form action="{{ url_for('project_start') }}" method="POST" class="form-inline">
+          <input type="hidden" name="project_id" value="{{ project['id'] }}">
+          <button type="submit" class="btn btn-success" name="start">Start</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
