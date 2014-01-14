@@ -12,6 +12,7 @@
           <div class="panel-heading">
             <a href="{{ url_for('project_detail', project_id=project['id']) }}">{{ project['name'] }}</a>
             <div class="pull-right">
+              <a href="{{ url_for('edit_project', project_id=project['id']) }}"><span class="glyphicon glyphicon-pencil"></span></a>
               <a href="{{ url_for('delete_project', project_id=project['id']) }}" onClick="return confirm_delete('{{ project['name'] }}');"><span class="glyphicon glyphicon-trash"></span></a>
             </div>
           </div>

@@ -37,6 +37,19 @@ def add_project():
     flash('New project was successfully added', 'success')
     return redirect(url_for('show_projects'))
 
+@app.route('/project/edit/<int:project_id>', methods=['GET', 'POST'])
+def edit_project(project_id):
+    if request.method == 'POST':
+        g.db.execute('update project set name=(?), description=(?) where (id)=(?)', [request.form['name'], request.form['description'], project_id])
+        g.db.commit()
+        flash('Project successfully modified.', 'success')
+        return redirect(url_for('show_projects'))
+    else:
+        cur = g.db.execute('select id, name, description from project where (id)=(?)', [project_id])
+        result = cur.fetchall()[0]
+        project = dict(id=result[0], name=result[1], description=result[2])
+        return render_template('project_edit.html', project=project)
+
 @app.route('/project/delete/<int:project_id>', methods=['GET'])
 def delete_project(project_id):
     g.db.execute('delete from timekeeper where (project_id)=(?)', [project_id])
@@ -48,9 +61,9 @@ def delete_project(project_id):
 
 @app.route('/project/<int:project_id>', methods=['GET'])
 def project_detail(project_id):
-    cur = g.db.execute('select id, name from project where (id)=(?)', [project_id])
+    cur = g.db.execute('select id, name, description from project where (id)=(?)', [project_id])
     result = cur.fetchall()[0]
-    project = dict(id=result[0], name=result[1])
+    project = dict(id=result[0], name=result[1], description=result[2])
     cur = g.db.execute('select id, project_id, start_date, stop_date from timekeeper where (project_id)=(?) order by start_date asc', [project_id])
     timekeeper = [dict(id=row[0], project_id=row[1], start_date=row[2], stop_date=row[3]) for row in cur.fetchall()]
     total = None
