@@ -98,7 +98,18 @@ def edit_timekeeper(timekeeper_id):
     if request.method == 'POST':
         cur = g.db.execute('select project_id from timekeeper where (id)=(?)', [timekeeper_id])
         project_id = cur.fetchall()[0][0]
-        g.db.execute('update timekeeper set start_date=(?), stop_date=(?), description=(?) where (id)=(?)', [request.form['start_date'], request.form['stop_date'], request.form['description'], timekeeper_id])
+        start_date, stop_date = request.form['start_date'], request.form['stop_date']
+        try:
+            parser.parse(stop_date)
+        except:
+            stop_date = ""
+            flash('Invalid stop date was ignored.', 'info')
+        try:
+            parser.parse(start_date)
+        except:
+            start_date = ""
+            flash('Invalid start date was ignored.', 'info')
+        g.db.execute('update timekeeper set start_date=(?), stop_date=(?), description=(?) where (id)=(?)', [start_date, stop_date, request.form['description'], timekeeper_id])
         g.db.commit()
         flash('Entry successfully modified.', 'success')
         return redirect(url_for('project_detail', project_id=project_id))
