@@ -11,5 +11,6 @@ create table timekeeper (
   project_id integer not null,
   start_date timestamp not null,
   stop_date timestamp,
+  description text,
   foreign key(project_id) references project(id)
 );

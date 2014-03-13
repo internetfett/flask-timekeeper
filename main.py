@@ -64,8 +64,8 @@ def project_detail(project_id):
     cur = g.db.execute('select id, name, description from project where (id)=(?)', [project_id])
     result = cur.fetchall()[0]
     project = dict(id=result[0], name=result[1], description=result[2])
-    cur = g.db.execute('select id, project_id, start_date, stop_date from timekeeper where (project_id)=(?) order by start_date asc', [project_id])
-    timekeeper = [dict(id=row[0], project_id=row[1], start_date=row[2], stop_date=row[3]) for row in cur.fetchall()]
+    cur = g.db.execute('select id, project_id, start_date, stop_date, description from timekeeper where (project_id)=(?) order by start_date asc', [project_id])
+    timekeeper = [dict(id=row[0], project_id=row[1], start_date=row[2], stop_date=row[3], description=row[4]) for row in cur.fetchall()]
     total = None
     for time in timekeeper:
         if time['stop_date']:
@@ -98,14 +98,14 @@ def edit_timekeeper(timekeeper_id):
     if request.method == 'POST':
         cur = g.db.execute('select project_id from timekeeper where (id)=(?)', [timekeeper_id])
         project_id = cur.fetchall()[0][0]
-        g.db.execute('update timekeeper set start_date=(?), stop_date=(?) where (id)=(?)', [request.form['start_date'], request.form['stop_date'], timekeeper_id])
+        g.db.execute('update timekeeper set start_date=(?), stop_date=(?), description=(?) where (id)=(?)', [request.form['start_date'], request.form['stop_date'], request.form['description'], timekeeper_id])
         g.db.commit()
         flash('Entry successfully modified.', 'success')
         return redirect(url_for('project_detail', project_id=project_id))
     else:
-        cur = g.db.execute('select id, start_date, stop_date from timekeeper where (id)=(?)', [timekeeper_id])
+        cur = g.db.execute('select id, start_date, stop_date, description from timekeeper where (id)=(?)', [timekeeper_id])
         result = cur.fetchall()[0]
-        timekeeper = dict(id=result[0], start_date=result[1], stop_date=result[2])
+        timekeeper = dict(id=result[0], start_date=result[1], stop_date=result[2], description=result[3])
         return render_template('timekeeper_edit.html', timekeeper=timekeeper)
 
 @app.route('/timekeeper/delete/<int:timekeeper_id>', methods=['GET'])
@@ -131,4 +131,4 @@ def _timedelta_format(timedelta):
     return '%2d hour%s, %2d minute%s' % (hours, "s"[hours==1:], minutes, "s"[minutes==1:])
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=int("3000"))

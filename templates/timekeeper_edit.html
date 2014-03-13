@@ -21,6 +21,12 @@
           </div>
         </div>
         <div class="form-group">
+          <label for="stop_date" class="control-label col-sm-2">Description:</label>
+          <div class="col-sm-4">
+            <input type="text" id="description" name="description" class="form-control" value="{% if timekeeper['description'] %}{{ timekeeper['description'] }}{% endif %}">
+          </div>
+        </div>
+        <div class="form-group">
           <div class="col-sm-offset-2 col-sm-4">
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>

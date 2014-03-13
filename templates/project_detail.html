@@ -18,6 +18,7 @@
             <th>Start</th>
             <th>Stop</th>
             <th>Duration</th>
+            <th>Description</th>
             <th>Tools</th>
           </tr>
           {% for time in timekeeper %}
@@ -31,6 +32,11 @@
               <td>
                 {% if time['duration'] %}
                   {{ time['duration']|deltaformat }}
+                {% endif %}
+              </td>
+              <td>
+                {% if time['description'] %}
+                  {{ time['description'] }}
                 {% endif %}
               </td>
               <td>
