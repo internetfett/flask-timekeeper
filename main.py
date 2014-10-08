@@ -137,7 +137,9 @@ def _jinja2_filter_datetime(date, fmt=None):
 
 @app.template_filter('deltaformat')
 def _timedelta_format(timedelta):
+    days = timedelta.days
     hours, remainder = divmod(timedelta.seconds, 3600)
+    hours += days * 24;
     minutes, seconds = divmod(remainder, 60)
     return '%2d hour%s, %2d minute%s' % (hours, "s"[hours==1:], minutes, "s"[minutes==1:])
 
